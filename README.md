@@ -42,16 +42,15 @@ Using docker will bring you the following advantages:
 ##Prerequisite
 
 * Download and Install Docker Community Edition ( [Mac (https://download.docker.com/mac/stable/Docker.dmg)]  / [Win (https://download.docker.com/win/stable/Docker%20for%20Windows%20Installer.exe)] )
+We expect you can use docker without `sudo`.
+If you are using linux and haven't add yourself into the docker group, do so and restart your terminal.
 * clone GitHub - NodeJS API service ( coming soon )
 * clone GitHub - Tutorial scripts
+`git clone git@bitbucket.org:jlam-palo-it/jenkins-pipeline-dockers.git && cd jenkins-pipeline-dockers`
 
 ##Housekeeping
 
-We expect you can use docker without `sudo`.
-If you are using linux and haven't add yourself into the docker group, do so and restart your terminal.
-
-On one hand, we usually don’t need to keep CI containers running on your desktop. 
-However, persist your CI pipeline configuration will help you a lot of time.  Therefore, we begin with creating folders which will be shared between host computer ( your PC / MAC ) and the virtual machines.
+The jenkins docker shall presist all setting to host disk and can be shutdown and removed to save disk spaces. Therefore, we begin with creating folders which will be shared between host computer ( your PC / MAC ) and the virtual machines.
 
 `
 sh housekeeping/createFoldersMac.sh
@@ -67,6 +66,10 @@ sudo mkdir -p ${DOCKER_HOST_BASE}/jenkins/home
 sudo mkdir -p ${DOCKER_HOST_BASE}/jenkins/.ssh
 
 ```
+
+if you want to change the path, can use the variable JENKIN_FOLDER
+`JENKIN_FOLDER=j3 sh housekeeping/createFoldersMac.sh`
+
 
 ##Create and Start Jenkins service
 
@@ -109,7 +112,7 @@ These steps ensure you have a unique ssh key per machines, you can disable any o
 If you are using bitbucket, goes to BitBucket Setting => SSH Keys => Add Key,
 copy from `ssh-rsa ... ` and paste to the Key textarea.
 
-![add SSH key to bitbucket][images/bitbucket.png]
+![add SSH key to bitbucket][../../raw/0290e57138f7d592985cd6f972e580d4ab6fdbc4/imges/bitbucket.png]
 
 ####How to configure the port and paths of docker
 
@@ -125,7 +128,7 @@ fi
 
 For example if you run:
 ```
-JENKIN_DOCKER_HTTP_PORT=5080 sh jenkins/start-jenkins.sh
+JENKIN_DOCKER_HTTP_PORT=5080 JENKIN_INST_NAME=j3 sh jenkins/start-jenkins.sh
 ```
 The jenkin will be web admin panel mapped to port 5080.
 
