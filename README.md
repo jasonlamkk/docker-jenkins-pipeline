@@ -126,9 +126,9 @@ else
 fi
 ```
 
-For example if you run:
+For example if you run a second instance:
 ```
-JENKIN_DOCKER_HTTP_PORT=5080 JENKIN_INST_NAME=j3 sh jenkins/start-jenkins.sh
+JENKIN_DOCKER_HTTP_PORT=5080 JENKIN_INST_NAME=j2 sh jenkins/start-jenkins.sh
 ```
 The jenkin will be web admin panel mapped to port 5080.
 
@@ -161,21 +161,41 @@ Here we will cover basic pipeline involve starting a server, run different tests
 1. First let create a **pipeline** project. *(note: never use space in item name, this may require extra care when writing bash scripts.)*
 2. Go to configure, scroll down to Pipeline
 3. copy the following Pipeline script into the text area. It does 2 things
-    1. clone your repo into a folder called *remote*.
+    1. clone your repo into a folder called *backend*.
     2. clean up the workspace after run, no matter success or not. 
 ```
 pipeline {
     agent any 
     stages {
-        stage('CheckOut') {
+        stage('Prepare') {
             steps {
-                sh 'rm -rf remote’
-                sh 'git clone git@bitbucket.org:jlam-palo-it/php-ci-test.git remote'
+                sh 'rm -rf backend'
+                sh 'git clone https://github.com/jasonlamkk/jenkins-pipeline-tutorial-restful-backend.git backend'
             }
         }
+        stage('multi-tier-in-parallel') {
+           parallel{
+                stage('backend') {
+                    steps{
+                        echo "backend unit test finish"
+                    }
+                }
+                stage('frontend'){
+                    steps{
+                        echo "frontend unit test not written"
+                    }
+                }
+            }
+        }
+        stage('Integrated Test') {
+            steps{
+                echo "Integrated Test not written"
+            }
+        }
+    }
     post {
         always {
-            sh 'rm -rf remote'
+            sh 'rm -rf backend'
         }
     }
 }
@@ -183,50 +203,108 @@ pipeline {
 
 4. Save the changes and click **Build Now**
 5. Look at the **Build History** and celebrate your first success
+### (optional) Auto create docker images
+
+Although docker images do not need to be created very often, it is a good practice to grant some self-heal ability any automated things.  The following step will detect and create required image (append it after `git clone ...`): 
+```
+                sh '''
+exists=`docker images | grep restful-backend | wc -l`
+if [ $exists -eq 0 ]; then
+    cd backend
+    docker build -t restful-backend .
+    cd ..
+fi
+'''
+```
 
 ### Add Backend Server to the pipeline
 
-In this session, we will use a repo with json-server to mimic a backend service 
+In this session, we will run json-server to mimic a backend service and also run a simple unit test on it:
 
-build a docker image with node, jasmine, json-server
+some more text ... 
+1. Check out
+2. instead of 
+3. instead of 
+4. instead of 
 
-```
-git clone github….
-cd node-json-server-jasmine/docker
-docker build -t node-backend .
-cd ../..
-
-docker run --rm -v node-json-server-jasmine/project/lib:/project/lib -v node-json-server-jasmine/project/config:/project/config node-backend
-``` 
-update the pipeline script as follow
+update the pipeline script as follow:
 
 ```
-
 pipeline {
     agent any 
     stages {
-        stage(’Tiers’) { 
+        stage('Prepare') {
             steps {
-                sh 'rm -rf backend’
-                sh 'rm -rf front’
-                parallel("backend": {
-                	    sh 'git clone git@bitbucket.org:jlam-palo-it/php-ci-test.git remote'
-                    sh 'docker run --rm php-symfony-pipeline-runtime'
-                    sh 'docker exec php-symfony-pipeline-runtime'
+                sh 'rm -rf backend'
+                sh 'git clone https://github.com/jasonlamkk/jenkins-pipeline-tutorial-restful-backend.git backend'
+                sh '''
+echo "Check Docker Image"
+imageName=restful-backend
+exists=`docker images | grep ${imageName} | wc -l`
+if [ $exists -eq 0 ]; then
+    cd backend
+    docker build -t ${imageName} .
+    cd ..
+fi
 
-                }, “frontend”: {
-                    sh 'echo “coming soon”’;
-                })
+echo "Stop Container Instance in case old one exists"
+cd backend
+containerName=json-api-server
+exists=`docker ps | grep ${containerName} | wc -l`
+if [ $exists -gt 0 ]; then
+    docker stop ${containerName}
+fi
+
+echo "Start Backend Container Instance but not the server"
+docker run --name=${containerName} --rm -d ${imageName}
+
+echo "Copy latest changes"
+currentDirectory=$(pwd)
+for file in $(< ${currentDirectory}/copyfiles.txt)
+do
+  docker cp "${currentDirectory}/code/${file}" "${containerName}:/code/${file}"
+done
+cd ..
+
+echo "Start Service"
+
+docker exec -d ${containerName} sh /code/start-server-inside-docker.sh
+pidExists=0
+while [ $pidExists -eq 0 ]
+do 
+    sleep 1
+    pidExists=$(docker exec json-api-server ls | grep pid.out | wc -l)
+done
+'''
             }
         }
-        stage(‘Visual Test’) {
-            steps {
-                sh 'echo “coming soon”’;
+        stage('multi-tier-in-parallel') {
+           parallel{
+                stage('backend') {
+                    steps{
+                        sh 'docker exec json-api-server sh run-test-inside-docker.sh'
+                        echo "backend unit test finish"
+                    }
+                }
+                stage('frontend'){
+                    steps{
+                        sh 'sleep 1'
+                        echo "frontend unit test not written"
+                    }
+                }
             }
         }
+        stage('Integrated Test') {
+            steps{
+                echo "Integrated Test not written"
+                sh 'docker exec json-api-server sh stop-server-inside-docker.sh'
+            }
+        }
+    }
     post {
         always {
-            sh 'rm -rf remote'
+            sh 'docker stop json-api-server'
+            sh 'rm -rf backend'
         }
     }
 }
