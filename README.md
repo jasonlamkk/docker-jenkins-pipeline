@@ -112,7 +112,7 @@ These steps ensure you have a unique ssh key per machines, you can disable any o
 If you are using bitbucket, goes to BitBucket Setting => SSH Keys => Add Key,
 copy from `ssh-rsa ... ` and paste to the Key textarea.
 
-![add SSH key to bitbucket][../../raw/983f5a01b9d2eff11aa4788e77e2cf902f2c567a/images/bitbucket.png]
+![add SSH key to bitbucket](https://bitbucket.org/jlam-palo-it/jenkins-pipeline-dockers/raw/983f5a01b9d2eff11aa4788e77e2cf902f2c567a/images/bitbucket.png)
 
 ####How to configure the port and paths of docker
 
@@ -336,7 +336,7 @@ done
 
 You now have a ready to use CI pipeline based on opensource tool chain, which can be deployed free of charge.
 
-![pipeline result][../../raw/983f5a01b9d2eff11aa4788e77e2cf902f2c567a/images/pipeline-result.png]
+![pipeline result](https://bitbucket.org/jlam-palo-it/jenkins-pipeline-dockers/raw/983f5a01b9d2eff11aa4788e77e2cf902f2c567a/images/pipeline-result.png)
 
 You deployed a very easy to use NodeJS json-server, and a unit test based on `jest`. We will cover them in detail in later blog posts. 
 
@@ -348,7 +348,7 @@ You may also notice a few important things when growing your pipeline:
 
 * Code your plugins instead of Pipeline Editor. Treating your pipeline as code enforces good discipline and also opens up a new world of features, and you can trial run every script on terminal.
 
-* 
+* Ensure each action has no side effect and remember to stop and remove all containers which started within the pipeline. ( You can include `--rm` flag when start them, so they will be deleted after stop.)
 
 ##Further improvement 
 
