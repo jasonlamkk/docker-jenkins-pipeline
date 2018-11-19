@@ -158,9 +158,15 @@ Thanks for your patient, you shall understand every scripts before run.  Now ple
 
 Here we will cover basic pipeline involve starting a server, run different tests in parallel.   *Yes, in parallel! *  For complex multitiered system, you can checkout multiple projects in parallel and each run their own unit test.  Then when everyone is ready and without critical error, run a visual testing.
 
+For the structure to create parallel pipeline tasks, we had seen a few some variations on the Net.  After some tests, this is a working version you can remember in 2 lines.
+
+* stages -> stage('') -> steps , for normal steps
+* stages -> stage('') -> parallel -> stage('') -> steps , for parallel steps
+
+Now, let create it together:
 1. First let create a **pipeline** project. *(note: never use space in item name, this may require extra care when writing bash scripts.)*
 2. Go to configure, scroll down to Pipeline
-3. copy the following Pipeline script into the text area. It does 2 things
+3. copy the following Pipeline script into the text area. It helps 2 things
     1. clone your repo into a folder called *backend*.
     2. clean up the workspace after run, no matter success or not. 
 ```
@@ -221,11 +227,27 @@ fi
 
 In this session, we will run json-server to mimic a backend service and also run a simple unit test on it:
 
-some more text ... 
-1. Check out
-2. instead of 
-3. instead of 
-4. instead of 
+The logic flow is as follow 
+
+1. Prepare
+
+ 1.1. check out source code
+
+ 1.2. detect if images is ready, build it if not
+ 
+ 1.3. stop previous container if already running
+ 
+ 1.4. start the containers
+ 
+  1.4.1. after start, copy files from repo to containers. ( Remember, we prefer copy small source files over to a nearly ready project folder > over `yard/npm/composer` install from scratch > over store external code in repository.)
+  
+  1.4.2. finally, start services you will use. ( Due to we need to copy files, start service is not a command embedded in docker. This is a hack for testing environment only. This shall be different from production docker images, and shall force you to make another set of images optimised for production performance. )
+  
+2. *Run unit tests in parallel* ( as there shall be no dependences )
+
+3. *Integrated Test* (when eveny service is ready) 
+
+4. use a post pipeline, always-run task to clean up everything. ( leave no side-effect after each run )
 
 update the pipeline script as follow:
 
@@ -309,3 +331,14 @@ done
     }
 }
 ```
+
+##In conclusion
+
+You now have a ready to use CI pipeline based on opensource tool chain, which can be deployed free of charge.
+
+![add SSH key to bitbucket][../../raw/0290e57138f7d592985cd6f972e580d4ab6fdbc4/imges/bitbucket.png]
+
+You deployed a very easy to use NodeJS json-server, and a unit test based on `jest`. We will cover them in detail in later blog posts. 
+You may also notice a few important things when growing your pipeline:
+* You will meet constraints when developing and dockerizing your services. Yet, these force you to create decoupled tiers. 
+* 
