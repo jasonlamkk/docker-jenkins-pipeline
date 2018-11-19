@@ -112,7 +112,7 @@ These steps ensure you have a unique ssh key per machines, you can disable any o
 If you are using bitbucket, goes to BitBucket Setting => SSH Keys => Add Key,
 copy from `ssh-rsa ... ` and paste to the Key textarea.
 
-![add SSH key to bitbucket][../../raw/0290e57138f7d592985cd6f972e580d4ab6fdbc4/imges/bitbucket.png]
+![add SSH key to bitbucket][../../raw/983f5a01b9d2eff11aa4788e77e2cf902f2c567a/images/bitbucket.png]
 
 ####How to configure the port and paths of docker
 
@@ -289,7 +289,7 @@ done
 cd ..
 
 echo "Start Service"
-
+docker exec ${containerName} npm update
 docker exec -d ${containerName} sh /code/start-server-inside-docker.sh
 pidExists=0
 while [ $pidExists -eq 0 ]
@@ -336,9 +336,38 @@ done
 
 You now have a ready to use CI pipeline based on opensource tool chain, which can be deployed free of charge.
 
-![add SSH key to bitbucket][../../raw/0290e57138f7d592985cd6f972e580d4ab6fdbc4/imges/bitbucket.png]
+![pipeline result][../../raw/983f5a01b9d2eff11aa4788e77e2cf902f2c567a/images/pipeline-result.png]
 
 You deployed a very easy to use NodeJS json-server, and a unit test based on `jest`. We will cover them in detail in later blog posts. 
+
 You may also notice a few important things when growing your pipeline:
-* You will meet constraints when developing and dockerizing your services. Yet, these force you to create decoupled tiers. 
+
+* You will meet constraints when developing and dockerizing your services. Yet, these force you to create decoupled service tiers. 
+
+* Never include third-party libraries in your repositories. Try to prevent npm install in your pipeline which could be very slow.
+
+* Code your plugins instead of Pipeline Editor. Treating your pipeline as code enforces good discipline and also opens up a new world of features, and you can trial run every script on terminal.
+
 * 
+
+##Further improvement 
+
+* __Node utilization__ , we assume you start this tutorial on your machine. you can optimize it by 
+
+ * Do: All material work within a node
+
+ * Acquire nodes within parallel steps, yet
+
+ * Don’t: Use input within a node block
+
+* __Plan for timeout__ , you can use this timeout block to prevent timeout occur `timeout(time:2, unit:'HOURS') { }`
+
+* __Notification__ , you may add email to receive build test result
+
+##Coming soon
+
+Currently we only added backend tier and its unit test. In the upcoming series, we will 
+
+* describe how to link frontend container to backend container or database container  
+
+* how to capture screen and make a __Visual Testing__ .
