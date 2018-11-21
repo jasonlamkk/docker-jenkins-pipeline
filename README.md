@@ -1,6 +1,9 @@
 #Kickstart Jenkins CI Pipeline with Docker(s) ( part 1/n ) v1.1
 
-Level: Beginner. Copy-and-Paste should get it working though remember to understand any unfamiliar concepts.
+Level: Beginner to Intermediate. 
+
+Beginners should be able to get it working by Copy-and-Paste.
+We do encourage understanding of the concepts and making changes to the scripts to fit your projects settings.
 
 ##What you can get from this tutorial
 
@@ -29,7 +32,7 @@ To fully implement CI for a multi-tier project, you need to enable Jenkins or yo
  
 **Jenkins** is an open source CI server which offers a simple way to set up a continuous integration and continuous delivery environment for almost any combination of languages and source code repositories. For beginners, it may be easier to understand if you treat it as a task scheduler.  Anyone with basic Linux bash script knowledge you only need to  bash command.
 
-**Docker** is a software that performs operating-system-level virtualisation, known as **containerisation**.  
+**Docker** is a software that performs operating-system-level virtualisation, known as **containerization**.  
 
 **Continuous Delivery Pipeline** in CI are automated processes for getting the software from source control through deployment to end users.
 **Jenkins Pipeline** is a newer suite of features in Jenkins to implement these pipelines in a single script file. You no longer need to set up a few different plugins to get through the while CI process.
