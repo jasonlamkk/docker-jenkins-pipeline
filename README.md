@@ -1,4 +1,4 @@
-#Kickstart Jenkins CI Pipeline with Docker(s) ( part 1/n ) v1.1
+#Kickstart Jenkins CI Pipeline with Docker(s) ( part 1/3 ) v1.1
 
 Level: Beginner to Intermediate. 
 
