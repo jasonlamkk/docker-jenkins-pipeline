@@ -1,6 +1,8 @@
 #Kickstart Jenkins CI Pipeline with Docker(s) ( part 1/3 ) v1.1
 
 Level: Beginner to Intermediate. 
+___Might be nice for the beginners to explain the advantages of jenkins and docker and how it can make things easy___
+
 
 Beginners should be able to get it working by Copy-and-Paste.
 We do encourage understanding of the concepts and making changes to the scripts to fit your projects settings.
@@ -30,7 +32,7 @@ To fully implement CI for a multi-tier project, you need to enable Jenkins or yo
 * having multiple children nodes attached to the CI server
 * or what we will demonstrate today: docker-ize everything and keep your CI tool slim 
  
-**Jenkins** is an open source CI server which offers a simple way to set up a continuous integration and continuous delivery environment for almost any combination of languages and source code repositories. For beginners, it may be easier to understand if you treat it as a task scheduler.  Anyone with basic Linux bash script knowledge you only need to  bash command.
+**Jenkins** is an open source CI server which offers a simple way to set up a continuous integration and continuous delivery environment for almost any combination of languages and source code repositories. For beginners, it may be easier to understand if you treat it as a task scheduler.  Anyone with basic Linux bash script knowledge you only need to  bash command ___Maybe that sentence is not that clear... I think there is missing word in it___.
 
 **Docker** is a software that performs operating-system-level virtualisation, known as **containerization**.  
 
@@ -91,7 +93,9 @@ docker run --rm -d --name local_jenkins -u root -p ${HTTP_PORT}:8080 -v ${SSH_HO
 ```
 
 This command started a Jenkins server named *local_jenkins* on port 4080 and mapped some folders from host to Jenkins.
-With the `--rm` command, the container instance will be auto-deleted while the stage will still be persisted with those mapped folders. 
+___What the command really does is build a docker image with a Jenkins, run it and expose the ports. (Maybe be more specific about the commands if your goal is to describe the docker ones too.)___
+___ --rm is an option more than a command___
+With the `--rm` command, the container instance will be auto-deleted while the stage will still be persisted with those mapped folders. ___Maybe could explain the point of mapping the folders.___
 
 Most important, we have to grant Jenkins the access to the docker by granting access to `/var/run/docker.sock` socket. ( this is not tested on windows, but there are sources saying it works on: https://jenkins.io/doc/tutorials/build-a-node-js-and-react-app-with-npm/#on-windows  Feedbacks are welcomed.)
 
@@ -104,6 +108,8 @@ docker exec local_jenkins cat /root/.ssh/id_rsa.pub || \
         docker exec local_jenkins cat /root/.ssh/id_rsa.pub )
 
 ```
+
+___ A command does not really something, you could say it helps you do this or that more likely ___
 `docker exec <container name/id>` means start a command inside that container. 
 
 Above, the script will first try to print out the existing SSH public key `/root/.ssh/id_rsa.pub`.  
@@ -112,7 +118,7 @@ Above, the script will first try to print out the existing SSH public key `/root
     and print out the public key.
 
 These steps ensure you have a unique ssh key per machines, you can disable any of them one by one. 
-If you are using bitbucket, goes to BitBucket Setting => SSH Keys => Add Key,
+If you are using bitbucket, goes ___go instead of goes___ to ___your___ BitBucket Setting => SSH Keys => Add Key,
 copy from `ssh-rsa ... ` and paste to the Key textarea.
 
 ![add SSH key to bitbucket](https://bitbucket.org/jlam-palo-it/jenkins-pipeline-dockers/raw/983f5a01b9d2eff11aa4788e77e2cf902f2c567a/images/bitbucket.png)
@@ -157,21 +163,22 @@ Now, please start the Jenkins together:
 2. add SSH key to the git server
 3. visit http://localhost:4080/ 
 4. for the first login, the admin panel will ask for the password. The script shall already print it to the terminal.
-
+___ In my case it did not print the password, do not know why did not really check what the script do, but it will be nice to explain how to retrieve if in anycase it does not print.___
+___Also explain the first steps to do when jenkins is up, like installing selected tools etc...___
 
 ###Create Jenkins pipeline
 
-Here we will cover basic pipeline involve starting a server, run different tests in parallel.   *Yes, in parallel! *  For a complex multitiered system, you can checkout multiple projects in parallel and each run their own unit test.  Then when everyone is ready and without critical error, run a visual testing.
+Here we will cover basic pipeline involve starting a server ___What do you mean by we will cover basic pipeline involve starting server?___, run different tests in parallel.   **Yes, in parallel!**  For a complex multi-tiered system, you can checkout multiple projects in parallel and each run their own unit test___s___.  Then when everyone is ready and without critical error, run a visual testing.
 
-For the structure to create parallel pipeline tasks, we had seen a few some variations on the Net.  After some tests, this is a working version you can remember in 2 lines.
+For the structure to create parallel pipeline tasks, we had seen a few some variations ___a few some variations?___ on the Net.  After some tests, this is a working version you can remember in 2 lines.
 
 * stages -> stage('') -> steps , for normal steps
 * stages -> stage('') -> parallel -> stage('') -> steps , for parallel steps
 
-Now, let create it together:
-1. First, let create a **pipeline** project. *(note: never use space in the item name, this may require extra care when writing bash scripts.)*
-2. Go to configure, scroll down to Pipeline
-3. copy the following Pipeline script into the text area. It helps 2 things
+Now, let___s___ create it together:
+1. First, let___s___ create a **pipeline** project. *(note: never use space in the item name, this may require extra care when writing bash scripts.)*
+2. Go to configure, scroll down to Pipeline ___New item => Pipeline?___
+3. copy the following Pipeline script into the text area. It helps ___with___ 2 things
     1. clone your repo into a folder called *backend*.
     2. clean up the workspace after a run, no matter success or not. 
 ```
@@ -185,21 +192,21 @@ pipeline {
             }
         }
         stage('multi-tier-in-parallel') {
-           parallel{
+           parallel {
                 stage('backend') {
-                    steps{
+                    steps {
                         echo "backend unit test finish"
                     }
                 }
-                stage('frontend'){
-                    steps{
+                stage('frontend') {
+                    steps {
                         echo "frontend unit test not written"
                     }
                 }
             }
         }
         stage('Integrated Test') {
-            steps{
+            steps {
                 echo "Integrated Test not written"
             }
         }
@@ -306,15 +313,15 @@ done
             }
         }
         stage('multi-tier-in-parallel') {
-           parallel{
+           parallel {
                 stage('backend') {
-                    steps{
+                    steps {
                         sh 'docker exec json-api-server sh run-test-inside-docker.sh'
                         echo "backend unit test finish"
                     }
                 }
-                stage('frontend'){
-                    steps{
+                stage('frontend') {
+                    steps {
                         sh 'sleep 1'
                         echo "frontend unit test not written"
                     }
@@ -322,7 +329,7 @@ done
             }
         }
         stage('Integrated Test') {
-            steps{
+            steps {
                 echo "Integrated Test not written"
                 sh 'docker exec json-api-server sh stop-server-inside-docker.sh'
             }
