@@ -254,12 +254,18 @@ In this session, we will run json-server to mimic a backend service and also run
 The logic flow is as follows:
 
 1. ___Prepare___
-⋅⋅1.1. check out the source code
-⋅⋅1.2. detect if images are ready, build it if not
-⋅⋅1.3. stop the previous container if already running
-⋅⋅1.4. start the containers
-⋅⋅1.4.1. after start, copy files from repo to containers. ( Remember, we prefer to copy small source files over to a nearly ready project folder > over `yard/npm/composer` install from scratch > over store external code in the repository.)
-⋅⋅1.4.2. finally, start services you will use. ( Due to we need to copy files, start service is not a command embedded in docker. This is a hack for testing environment only. This shall be different from production docker images and shall force you to make another set of images optimised for production performance. )
+
+..1. check out the source code
+
+..2. detect if images are ready, build it if not
+
+..3. stop the previous container if already running
+
+..4. start the containers
+
+....* after start, copy files from repo to containers. ( Remember, we prefer to copy small source files over to a nearly ready project folder > over `yard/npm/composer` install from scratch > over store external code in the repository.)
+
+....* finally, start services you will use. ( Due to we need to copy files, start service is not a command embedded in docker. This is a hack for testing environment only. This shall be different from production docker images and shall force you to make another set of images optimised for production performance. )
   
 2. ___*Run unit tests in parallel*___ ( as there shall be no dependencies )
 
