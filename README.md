@@ -255,17 +255,17 @@ The logic flow is as follows:
 
 1. ___Prepare___
 
-⋅⋅1. check out the source code
+    1. check out the source code
 
-⋅⋅2. detect if images are ready, build it if not
+    2. detect if images are ready, build it if not
 
-⋅⋅3. stop the previous container if already running
+    3. stop the previous container if already running
 
-⋅⋅4. start the containers
+    4. start the containers
 
-⋅⋅⋅⋅* after start, copy files from repo to containers. ( Remember, we prefer to copy small source files over to a nearly ready project folder > over `yard/npm/composer` install from scratch > over store external code in the repository.)
+        * after start, copy files from repo to containers. ( Remember, we prefer to copy small source files over to a nearly ready project folder > over `yard/npm/composer` install from scratch > over store external code in the repository.)
 
-⋅⋅⋅⋅* finally, start services you will use. ( Due to we need to copy files, "start application server" is not a command embedded in docker. This is a hack for testing environment only. This shall be different from production docker images and shall force you to make another set of docker images optimised for production performance. )
+        * finally, start services you will use. ( Due to we need to copy files, "start application server" is not a command embedded in docker. This is a hack for testing environment only. This shall be different from production docker images and shall force you to make another set of docker images optimised for production performance. )
   
 2. ___*Run unit tests in parallel*___ ( as there shall be no dependencies )
 
