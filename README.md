@@ -3,9 +3,6 @@
 Level: Beginner to Intermediate. 
 
 
-___Might be nice for the beginners to explain the advantages of jenkins and docker and how it can make things easy___
-
-
 Beginners should be able to get it working by Copy-and-Paste.
 We do encourage understanding of the concepts and making changes to the scripts to fit your projects settings.
 
