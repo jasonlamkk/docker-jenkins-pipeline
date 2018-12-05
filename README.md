@@ -1,11 +1,28 @@
-#Kickstart Jenkins CI Pipeline with Docker(s) ( part 1/3 ) v1.1
+#Kickstart Jenkins CI Pipeline with Docker(s) ( part 1/3 )
 
 Level: Beginner to Intermediate. 
+
+
 ___Might be nice for the beginners to explain the advantages of jenkins and docker and how it can make things easy___
 
 
 Beginners should be able to get it working by Copy-and-Paste.
 We do encourage understanding of the concepts and making changes to the scripts to fit your projects settings.
+
+##Why dockers 
+
+* a complex system usually contains multi-tiers with different toolchain. 
+* docker helped us to simulate these tiers on single computer
+* consume less resources than create 3~10 virtual machines
+* provide a way to interact and control all machines with command lines
+* steps are repeatable
+* may reference to official site for detail about [What is docker](https://www.docker.com/why-docker)
+
+##Why jenkins + docker
+
+* open source 
+* well known
+* easy to migrate your daily works to CI. As you can be trigger any task with shell script. 
 
 ##What you can get from this tutorial
 
@@ -34,7 +51,7 @@ To fully implement CI for a multi-tier project, you need to enable Jenkins or yo
  
 **Jenkins** is an open source CI server which offers a simple way to set up a continuous integration and continuous delivery environment for almost any combination of languages and source code repositories. For beginners, it may be easier to understand if you treat it as a task scheduler.  You can migrate your daily works, such as *running unit tests*, *building software releases*, *copy files to servers*, to jenkins.
 
-**Docker** is a software that performs operating-system-level virtualisation, known as **containerization**.  
+**Docker**  <a name="docker"></a> is a software that performs operating-system-level virtualisation, known as **containerization**.  
 
 **Continuous Delivery Pipeline** in CI are automated processes for getting the software from source control through deployment to end users.
 **Jenkins Pipeline** <a name="pipeline"></a> is a newer suite of features in Jenkins to implement these pipelines in a single script file. You no longer need to set up a few different plugins to get through the while CI process.
