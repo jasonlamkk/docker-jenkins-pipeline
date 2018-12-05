@@ -189,7 +189,7 @@ For the structure to create parallel pipeline tasks, you can remember in 2 lines
 Now, let's create it together:
 1. First, let's create a **pipeline** project. *(note: never use space in the item name, this may require extra care when writing bash scripts.)*
 2. Go to `Configure`, scroll down to Pipeline
-[!Pipeline](https://bitbucket.org/jlam-palo-it/jenkins-pipeline-dockers/raw/2b7d5a2e91df83cc02d69bf340fbf24e84fb7d28/images/pipelinesection.png)
+![Pipeline section](https://bitbucket.org/jlam-palo-it/jenkins-pipeline-dockers/raw/2b7d5a2e91df83cc02d69bf340fbf24e84fb7d28/images/pipelinesection.png)
 3. copy the following Pipeline script into the text area. It helps with 2 things
     1. clone your repo into a folder called *backend*.
     2. clean up the workspace after a run, no matter success or not. 
