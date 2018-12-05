@@ -235,7 +235,7 @@ pipeline {
 5. Look at the **Build History** and celebrate your first success
 ### (optional) Auto create docker images
 
-Although docker images do not need to be created very often, it is a good practice to grant some self-heal ability any automated things.  The following step will detect and create the required image (append it after `git clone ...`): 
+Although docker images do not need to be created very often, it is a good practice to grant some self-heal ability any automated things.  The following step will detect and create the required image (append it after `git clone ...`) (This step was included in the full version below.): 
 ```
                 sh '''
 exists=`docker images | grep restful-backend | wc -l`
@@ -255,17 +255,15 @@ The logic flow is as follows:
 
 1. ___Prepare___
 
- 1.1. check out the source code
+> 1.1. check out the source code
 
- 1.2. detect if images are ready, build it if not
+> 1.2. detect if images are ready, build it if not
  
- 1.3. stop the previous container if already running
+> 1.3. stop the previous container if already running
  
- 1.4. start the containers
- 
-  1.4.1. after start, copy files from repo to containers. ( Remember, we prefer to copy small source files over to a nearly ready project folder > over `yard/npm/composer` install from scratch > over store external code in the repository.)
-  
-  1.4.2. finally, start services you will use. ( Due to we need to copy files, start service is not a command embedded in docker. This is a hack for testing environment only. This shall be different from production docker images and shall force you to make another set of images optimised for production performance. )
+> 1.4. start the containers
+> 1.4.1. after start, copy files from repo to containers. ( Remember, we prefer to copy small source files over to a nearly ready project folder > over `yard/npm/composer` install from scratch > over store external code in the repository.)
+> 1.4.2. finally, start services you will use. ( Due to we need to copy files, start service is not a command embedded in docker. This is a hack for testing environment only. This shall be different from production docker images and shall force you to make another set of images optimised for production performance. )
   
 2. ___*Run unit tests in parallel*___ ( as there shall be no dependencies )
 
