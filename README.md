@@ -3,60 +3,64 @@
 Level: Beginner to Intermediate. 
 
 
-Beginners should be able to get it working by Copy-and-Paste.
-We do encourage understanding of the concepts and making changes to the scripts to fit your projects settings.
+Beginners should be able to get the setup working using Copy-and-Paste.
+We recommend to have basic understanding of the concepts first and do encourage making changes to the scripts to fit your projects settings.
 
-##Why dockers 
+##Why Docker 
 
-* a complex system usually contains multi-tiers with different toolchain. 
-* docker helped us to simulate these tiers on single computer
-* consume less resources than create 3~10 virtual machines
-* provide a way to interact and control all machines with command lines
-* steps are repeatable
-* may reference to official site for detail about [What is docker](https://www.docker.com/why-docker)
+* Complex systems usually consist of multiple tiers using different toolchains
+* Docker can help simulate these tiers on single computer or machine
+* Consumes less resources compared to using multiple virtual machines
+* Provides a way to interact, monitor, and control all machines with simple commands
+* Steps to setup are repeatable
 
-##Why jenkins + docker
+_may reference to official site for detail about [What is docker](https://www.docker.com/why-docker)_
 
-* open source 
-* well known
-* easy to migrate your daily works to CI. As you can be trigger any task with shell script. 
+##Why Jenkins + Docker
+
+* Open-source
+* Popular and well known
+* Easy to migrate your workflows to CI.
+* Trigger or orchestrate any task with shell scripting. 
 
 ##What you can get from this tutorial
 
-* quickly set up a CI environment with open source toolchain in a repeatable way
-* create post-execution scripts on Jenkins without using extra plugins
-* create parallel CI tasks
-* create a restful API with NodeJS in a few minutes
-* write a simple test for the API with jasmine 
-* shorten project build time 
-* some bash automation  
+* Quickly set up a CI environment with open source toolchain in a repeatable way
+* Create post-execution scripts on Jenkins without using extra plugins
+* Create parallel CI tasks
+* Create a restful API with NodeJS in a few minutes
+* Srite a simple test for the API with jasmine 
+* Shorten project build time 
+* Some bash automation  
 
-##What will be cover in the remaining series 
+##What will be covered on the next part of the series 
 
-* create a simple web app 
-* create visual testing for web app
-* recap parallel tasks on Jenkins
-* demonstrate a multi-tier CI Pipeline  
+* Create a simple web app 
+* Perform visual testing for web app
+* Recap parallel tasks on Jenkins
+* Demonstrate a multi-tier CI Pipeline  
 
 ##Introduction
 
-To fully implement CI for a multi-tier project, you need to enable Jenkins or your CI server to interact with different components developed with different tool-chains. There are a few ways to do so.
+To fully implement CI for a multi-tiered project, you need to configure Jenkins or your CI server to interact with different components developed with different tool-chains. There are a few ways to do so:
+**_Break this sentence down. As an opener for the Introduction it's a bit heavy - using vague terms and combining it with "different" will be confusing for beginners. Give concrete examples as to what the components or toolchains you are pertaining to - this helps visualize what the scenario is and helps you establish your agenda. More shorter sentences is better than a run-on._** 
 
 * Install these environments on the CI server
-* having multiple children nodes attached to the CI server
-* or what we will demonstrate today: docker-ize everything and keep your CI tool slim 
+* have multiple children nodes attached to the CI server
+* or (what we will demonstrate today) _Dockerize_ everything and keep your CI tool lean 
  
-**Jenkins** is an open source CI server which offers a simple way to set up a continuous integration and continuous delivery environment for almost any combination of languages and source code repositories. For beginners, it may be easier to understand if you treat it as a task scheduler.  You can migrate your daily works, such as *running unit tests*, *building software releases*, *copy files to servers*, to jenkins.
+**Jenkins** is an open source CI server which offers a simple way to set up a Continuous Integration and Continuous Delivery environment for almost any combination of languages and source code repositories. For beginners, it may be easier to understand if you treat it as a task scheduler. You can migrate your daily works, such as *running unit tests*, *building software releases*, or *copying files to servers*, into jenkins.
 
 **Docker**  <a name="docker"></a> is a software that performs operating-system-level virtualisation, known as **containerization**.  
 
-**Continuous Delivery Pipeline** in CI are automated processes for getting the software from source control through deployment to end users.
-**Jenkins Pipeline** <a name="pipeline"></a> is a newer suite of features in Jenkins to implement these pipelines in a single script file. You no longer need to set up a few different plugins to get through the while CI process.
+**Continuous Delivery Pipeline** in CI are automated processes for getting the software from source control up to deployment in your servers for consumers (which can be other servers or end users).
 
-Using docker will bring you the following advantages:
-* separate complex and possible conflicting toolchains into straightforward virtual machines called **containers**.
-* faster Pull->Build->Test cycle.  Instead of update dependency, every time before build
-* closely mimic production architectures with different tiers of service
+**Jenkins Pipeline** <a name="pipeline"></a> is a newer suite of features in Jenkins to implement CD pipelines in a single script file. You no longer need to set up a number of different plugins just to get through the whole CI process.
+
+Using Docker will bring you the following advantages:
+* Ability to separate complex and possibly conflicting toolchains into their own sandboxes called **containers**.
+* Faster Pull->Build->Test cycle.  Instead of loading dependencies every time before building.
+* Mimic production architecture with different tiers of service as closely as possible.
 
 ##Prerequisite
 
@@ -69,13 +73,13 @@ If you are using Linux and haven't added yourself into the docker group, do so a
 
 ##Housekeeping
 
-The Jenkins docker shall presist all settings to host disk and can be shutdown and removed to save disk spaces. Therefore, we begin with creating folders which will be shared between the host computer ( your PC / MAC ) and virtual machines.
+The Jenkins docker will presist all settings to the host disk and can be shutdown and removed to save disk space. Therefore, we begin by creating folders which will be shared between the host computer ( your PC / MAC ) and containers.
 
 `
 sh housekeeping/createFoldersMac.sh
 `
 
-It contains scripts to create folders and grant access to yourself.
+This script contains commands to create folders and grant access to yourself.
 
 ```
 sudo mkdir -p ${DOCKER_HOST_BASE}/jenkins/documents
@@ -92,11 +96,11 @@ if you want to change the path, can use the variable JENKIN_FOLDER
 
 ##Create and Start Jenkins service
 
-###Understand what will be created
+###Creation and Setup
 
 First, we will use the script `jenkins/start-jenkins.sh`.
 
-####How it start docker
+####What the script does
 ```
 DOCKER_SOCKET=/var/run/docker.sock
 HTTP_PORT=4080
@@ -106,7 +110,7 @@ SSH_HOME=/private/jenkins/.ssh
 docker run --rm -d --name local_jenkins -u root -p ${HTTP_PORT}:8080 -v ${SSH_HOME}:/root/.ssh -v ${DATA_FOLDER}:/var/jenkins_home -v ${DOCKER_SOCKET}:/var/run/docker.sock -v ${HOME_FOLDER}:/home jenkinsci/blueocean
 ```
 
-This command
+Aside from setting some environment variables, the script ran a long command at the end. Here's what it did:
  - started a container instance named *local_jenkins* which contain contents from image `jenkinsci/blueocean`
  - `-d` run in detached mode ( Run container in background and print container ID /var/run/docker.sock )
  - `-u root` switched to root user ( which allow jenkins to access )
@@ -114,21 +118,21 @@ This command
  - `-v ${path_in_host}:${path_inside_container}` mount a volume from host to container
  - visit [docker docs](https://docs.docker.com/engine/reference/commandline/run/#options) for more available options
 
-Most important, we have to grant Jenkins the access to the docker by granting access to `/var/run/docker.sock` socket. ( this is not tested on windows, but there are sources saying it works on: https://jenkins.io/doc/tutorials/build-a-node-js-and-react-app-with-npm/#on-windows  Feedbacks are welcomed.)
+Most importantly, we have to grant Jenkins the access to Docker by granting access to `/var/run/docker.sock` socket. ( this is not tested on windows, but there are sources saying it works on: https://jenkins.io/doc/tutorials/build-a-node-js-and-react-app-with-npm/#on-windows  Feedbacks are welcomed.)
 
-####How to grant access to git servers
-In most jenkins tutorial, you will configure upstream git servers credentials per project. 
+####Grant access to git repositories
+In most of the Jenkins tutorials you will configure upstream git server credentials per project. 
 
-When using pipeline, we may work with multiple repositories with different credentials.
-
+When using the pipeline, we may work with multiple repositories with different credentials.
+**_Better to add a rationale, make the statements more situational. Expound on multiple repositories to give relevance to giving Jenkins it's own user._**
 The workaround is treat jenkins as a new git user and manage access control on the cloud.
 
-Below, we will first try to print out the existing SSH public key `/root/.ssh/id_rsa.pub`.  
+Below, we will try to print out the existing SSH public key `/root/.ssh/id_rsa.pub`.  
     If cannot find any, will create the folder `/root/.ssh`, 
     generate a new private key `/root/.ssh/id_rsa`, 
     and print out the public key.
 
-(This is part of the automated script you don't need to type it:)
+(This is part of the automated script you don't need to type it :)
 ```
 docker exec local_jenkins cat /root/.ssh/id_rsa.pub || \
     ( docker exec local_jenkins mkdir -p /root/.ssh && \
@@ -137,13 +141,13 @@ docker exec local_jenkins cat /root/.ssh/id_rsa.pub || \
 
 ```
 
-These steps ensure you have a unique ssh key per machines, you can disable any of them one by one. 
-If you are using bitbucket, go to your BitBucket cloud Setting => SSH Keys => Add Key,
+These steps ensure you have a unique ssh key per machine, you can disable any of them individually. 
+If you are using BitBucket, go to your BitBucket cloud Setting => SSH Keys => Add Key,
 copy `ssh-rsa ... ` from your terminal and paste to the textarea named Key.
 
 ![add SSH key to bitbucket](https://bitbucket.org/jlam-palo-it/jenkins-pipeline-dockers/raw/983f5a01b9d2eff11aa4788e77e2cf902f2c567a/images/bitbucket.png)
 
-####How to configure the port and paths of docker
+####How to configure the port and paths for Docker
 
 The script observes on environment variables so that you can change port and folders when needed.
 
@@ -155,25 +159,26 @@ else
 fi
 ```
 
-For example if you run a second instance:
+For example, if you want to run a second instance:
 ```
 JENKIN_DOCKER_HTTP_PORT=5080 JENKIN_INST_NAME=j2 sh jenkins/start-jenkins.sh
 ```
 The Jenkins will be web admin panel mapped to port 5080.
+**_rephrase this_**
 
-####How it says yes for first ssh connection to git servers
+####Initiate access from Jenkins to your Git servers.
 
-When a new virtual machine SSH to a server, it will ask your confirmation.
-This could block your Jenkins pipeline and we make a solution as follow.
+Whenever a new machine performs it's first SSH requests to a server, it will ask your confirmation to authorize add the server to your machine's trusted hosts.
+If you do not trigger this access confirmation, it could block your Jenkins pipeline. To fix this, we made a solution as follows:
 
-There is another script file `jenkins/ssh-client-init.sh`, it runs `ssh-keyscan` and inject public keys into known_hosts
+Run the script file `jenkins/ssh-client-init.sh`. It runs `ssh-keyscan` and inject public keys into known_hosts
 
 ```
 ssh-keyscan -t rsa bitbucket.org > /root/.ssh/known_hosts
 ssh-keyscan -t rsa github.com >> /root/.ssh/known_hosts
 ```
 
-###Start your Jenkins
+###Starting Jenkins
 
 Thank you for your patience, you shall understand every scripts before run.  
 
