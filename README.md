@@ -42,12 +42,11 @@ _may reference to official site for detail about [What is docker](https://www.do
 
 ##Introduction
 
-To fully implement CI for a multi-tiered project, you need to configure Jenkins or your CI server to interact with different components developed with different tool-chains. There are a few ways to do so:
-**_Break this sentence down. As an opener for the Introduction it's a bit heavy - using vague terms and combining it with "different" will be confusing for beginners. Give concrete examples as to what the components or toolchains you are pertaining to - this helps visualize what the scenario is and helps you establish your agenda. More shorter sentences is better than a run-on._** 
+Throughout these series, we will try to build a CI pipeline with Jenkins and Dockers.
 
-* Install these environments on the CI server
-* have multiple children nodes attached to the CI server
-* or (what we will demonstrate today) _Dockerize_ everything and keep your CI tool lean 
+This will enable you to test any application multi-tiered project on a single computer.
+
+##Terminologies
  
 **Jenkins** is an open source CI server which offers a simple way to set up a Continuous Integration and Continuous Delivery environment for almost any combination of languages and source code repositories. For beginners, it may be easier to understand if you treat it as a task scheduler. You can migrate your daily works, such as *running unit tests*, *building software releases*, or *copying files to servers*, into jenkins.
 
