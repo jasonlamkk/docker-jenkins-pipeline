@@ -1,9 +1,15 @@
 #Kickstart Jenkins CI Pipeline with Docker(s) ( part 1/3 )
 
-Level: Beginner to Intermediate. 
+##Introduction
 
+Throughout these series, we will try to build a CI pipeline with Jenkins and Dockers.
+
+If you can master them, you will be able to test any multi-tiered application on a single computer.
+
+##Level: Beginner to Intermediate. 
 
 Beginners should be able to get the setup working using Copy-and-Paste.
+
 We recommend to have basic understanding of the concepts first and do encourage making changes to the scripts to fit your projects settings.
 
 ##Why Docker 
@@ -39,12 +45,6 @@ _may reference to official site for detail about [What is docker](https://www.do
 * Perform visual testing for web app
 * Recap parallel tasks on Jenkins
 * Demonstrate a multi-tier CI Pipeline  
-
-##Introduction
-
-Throughout these series, we will try to build a CI pipeline with Jenkins and Dockers.
-
-This will enable you to test any application multi-tiered project on a single computer.
 
 ##Terminologies
  
