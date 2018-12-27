@@ -120,13 +120,13 @@ Aside from setting some environment variables, the script ran a long command at 
 Most importantly, we have to grant Jenkins the access to Docker by granting access to `/var/run/docker.sock` socket. ( this is not tested on windows, but there are sources saying it works on: https://jenkins.io/doc/tutorials/build-a-node-js-and-react-app-with-npm/#on-windows  Feedbacks are welcomed.)
 
 ####Grant access to git repositories
-In most of the Jenkins tutorials you will configure upstream git server credentials per project. 
+In most of the Jenkins single tier project, you only need to interact with one upstream git server.
 
-When using the pipeline, we may work with multiple repositories with different credentials.
-**_Better to add a rationale, make the statements more situational. Expound on multiple repositories to give relevance to giving Jenkins it's own user._**
-The workaround is treat jenkins as a new git user and manage access control on the cloud.
+But when works with pipeline, it is very likely you will be pulling a few repositories and combine them to form your testing enviorment.
 
-Below, we will try to print out the existing SSH public key `/root/.ssh/id_rsa.pub`.  
+To better manage the access control, we will treat jenkins as a separated git user, and access read access of to it as follow.
+
+First, the script below will try to print out the existing SSH public key `/root/.ssh/id_rsa.pub`.  
     If cannot find any, will create the folder `/root/.ssh`, 
     generate a new private key `/root/.ssh/id_rsa`, 
     and print out the public key.
@@ -141,6 +141,9 @@ docker exec local_jenkins cat /root/.ssh/id_rsa.pub || \
 ```
 
 These steps ensure you have a unique ssh key per machine, you can disable any of them individually. 
+
+Second, you need to add this public key to your git server: 
+
 If you are using BitBucket, go to your BitBucket cloud Setting => SSH Keys => Add Key,
 copy `ssh-rsa ... ` from your terminal and paste to the textarea named Key.
 
