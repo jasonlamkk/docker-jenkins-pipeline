@@ -42,8 +42,9 @@ _may reference to official site for detail about [What is docker](https://www.do
 
 ##Introduction
 
-To fully implement CI for a multi-tiered project, you need to configure Jenkins or your CI server to interact with different components developed with different tool-chains. There are a few ways to do so:
-**_Break this sentence down. As an opener for the Introduction it's a bit heavy - using vague terms and combining it with "different" will be confusing for beginners. Give concrete examples as to what the components or toolchains you are pertaining to - this helps visualize what the scenario is and helps you establish your agenda. More shorter sentences is better than a run-on._** 
+What we want to achieve here is for you to have a running CI setup without having explicit knowledge of all the commands / configuration that is needed. Along with this article are scripts that you can download and run to assist you in the whole setup process. We will provide you with as much context as possible, on each step, so you would still know what the scripts are doing or why you are running them.
+
+Now, to implement CI for your project, you need to configure Jenkins to interact with your components and your tool-chains. There are a few ways to do so:
 
 * Install these environments on the CI server
 * have multiple children nodes attached to the CI server
@@ -56,6 +57,8 @@ To fully implement CI for a multi-tiered project, you need to configure Jenkins 
 **Continuous Delivery Pipeline** in CI are automated processes for getting the software from source control up to deployment in your servers for consumers (which can be other servers or end users).
 
 **Jenkins Pipeline** <a name="pipeline"></a> is a newer suite of features in Jenkins to implement CD pipelines in a single script file. You no longer need to set up a number of different plugins just to get through the whole CI process.
+
+Eventually, we will scale your setup to be able to handle multiple components that were developed using different tool-chains.
 
 Using Docker will bring you the following advantages:
 * Ability to separate complex and possibly conflicting toolchains into their own sandboxes called **containers**.
