@@ -1,10 +1,26 @@
 #Kickstart Jenkins CI Pipeline with Docker(s) ( part 1/3 )
 
-Level: Beginner to Intermediate. 
+##Introduction
 
+Throughout these series, we will try to build a CI pipeline with Jenkins and Dockers.
+
+If you can master them, you will be able to test any multi-tiered application on a single computer.
+
+##Level: Beginner to Intermediate. 
 
 Beginners should be able to get the setup working using Copy-and-Paste.
+
 We recommend to have basic understanding of the concepts first and do encourage making changes to the scripts to fit your projects settings.
+
+##Terminologies
+
+**Jenkins** is an open source CI server which offers a simple way to set up a Continuous Integration and Continuous Delivery environment for almost any combination of languages and source code repositories. For beginners, it may be easier to understand if you treat it as a task scheduler. You can migrate your daily works, such as *running unit tests*, *building software releases*, or *copying files to servers*, into jenkins.
+
+**Docker**  <a name="docker"></a> is a software that performs operating-system-level virtualisation, known as **containerization**.  
+
+**Continuous Delivery Pipeline** in CI are automated processes for getting the software from source control up to deployment in your servers for consumers (which can be other servers or end users).
+
+**Jenkins Pipeline** <a name="pipeline"></a> is a newer suite of features in Jenkins to implement CD pipelines in a single script file. You no longer need to set up a number of different plugins just to get through the whole CI process.
 
 ##Why Docker 
 
@@ -16,11 +32,17 @@ We recommend to have basic understanding of the concepts first and do encourage 
 
 _may reference to official site for detail about [What is docker](https://www.docker.com/why-docker)_
 
+Using Docker will bring you the following advantages:
+* Ability to separate complex and possibly conflicting toolchains into their own sandboxes called **containers**.
+* Faster Pull->Build->Test cycle. 
+Instead of loading dependencies every time before building.
+* Mimic production architecture with different tiers of service as closely as possible.
+
 ##Why Jenkins + Docker
 
 * Open-source
 * Popular and well known
-* Easy to migrate your workflows to CI.
+* Easy to migrate your workflows to CI without dependency on specific brand of tools.
 * Trigger or orchestrate any task with shell scripting. 
 
 ##What you can get from this tutorial
@@ -40,30 +62,7 @@ _may reference to official site for detail about [What is docker](https://www.do
 * Recap parallel tasks on Jenkins
 * Demonstrate a multi-tier CI Pipeline  
 
-##Introduction
-
-What we want to achieve here is for you to have a running CI setup without having explicit knowledge of all the commands / configuration that is needed. Along with this article are scripts that you can download and run to assist you in the whole setup process. We will provide you with as much context as possible, on each step, so you would still know what the scripts are doing or why you are running them.
-
-Now, to implement CI for your project, you need to configure Jenkins to interact with your components and your tool-chains. There are a few ways to do so:
-
-* Install these environments on the CI server
-* have multiple children nodes attached to the CI server
-* or (what we will demonstrate today) _Dockerize_ everything and keep your CI tool lean 
- 
-**Jenkins** is an open source CI server which offers a simple way to set up a Continuous Integration and Continuous Delivery environment for almost any combination of languages and source code repositories. For beginners, it may be easier to understand if you treat it as a task scheduler. You can migrate your daily works, such as *running unit tests*, *building software releases*, or *copying files to servers*, into jenkins.
-
-**Docker**  <a name="docker"></a> is a software that performs operating-system-level virtualisation, known as **containerization**.  
-
-**Continuous Delivery Pipeline** in CI are automated processes for getting the software from source control up to deployment in your servers for consumers (which can be other servers or end users).
-
-**Jenkins Pipeline** <a name="pipeline"></a> is a newer suite of features in Jenkins to implement CD pipelines in a single script file. You no longer need to set up a number of different plugins just to get through the whole CI process.
-
 Eventually, we will scale your setup to be able to handle multiple components that were developed using different tool-chains.
-
-Using Docker will bring you the following advantages:
-* Ability to separate complex and possibly conflicting toolchains into their own sandboxes called **containers**.
-* Faster Pull->Build->Test cycle.  Instead of loading dependencies every time before building.
-* Mimic production architecture with different tiers of service as closely as possible.
 
 ##Prerequisite
 
@@ -130,7 +129,7 @@ But when works with pipeline, it is very likely you will be pulling a few reposi
 
 To better manage the access control, we will treat jenkins as a separated git user, and access read access of to him as follow.
 
-Below, we will try to print out the existing SSH public key `/root/.ssh/id_rsa.pub`.  
+First, we will try to print out the existing SSH public key `/root/.ssh/id_rsa.pub`.  
     If cannot find any, will create the folder `/root/.ssh`, 
     generate a new private key `/root/.ssh/id_rsa`, 
     and print out the public key.
@@ -145,6 +144,9 @@ docker exec local_jenkins cat /root/.ssh/id_rsa.pub || \
 ```
 
 These steps ensure you have a unique ssh key per machine, you can disable any of them individually. 
+
+Second, you need to add this public key to your git server: 
+
 If you are using BitBucket, go to your BitBucket cloud Setting => SSH Keys => Add Key,
 copy `ssh-rsa ... ` from your terminal and paste to the textarea named Key.
 
