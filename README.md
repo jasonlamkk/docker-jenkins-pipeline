@@ -166,8 +166,7 @@ For example, if you want to run a second instance:
 ```
 JENKIN_DOCKER_HTTP_PORT=5080 JENKIN_INST_NAME=j2 sh jenkins/start-jenkins.sh
 ```
-The Jenkins will be web admin panel mapped to port 5080.
-**_rephrase this_**
+The Jenkins web admin panel will be mapped to port 5080.
 
 ####Initiate access from Jenkins to your Git servers.
 
@@ -183,9 +182,7 @@ ssh-keyscan -t rsa github.com >> /root/.ssh/known_hosts
 
 ###Starting Jenkins
 
-Thank you for your patience, you shall understand every scripts before run.  
-
-Now, please start the Jenkins together:
+After the preparation, we are now ready to run Jenkins. Use the following steps:
 
 1. `sh jenkins/start-jenkins.sh`
 2. Add SSH key to the git server
@@ -201,9 +198,9 @@ Here, we will cover how to run different tests in parallel.
 Which means you will be able to: 
 * checkout multiple projects in parallel
 * let each project run its own unit tests.
-* when everyone is ready and without critical error, run a visual testing. (visual testing will be cover in another post)
+* when all the projects are ready (and without errors), run a visual testing. (visual testing will be covered in another post)
 
-For the structure to create parallel pipeline tasks, you can remember in 2 lines.
+For the structure to create parallel pipeline tasks, try to remember these 2 lines.
 
 * `stages -> stage('') -> steps` , for normal steps
 * `stages -> stage('') -> parallel -> stage('') -> steps` , for parallel steps
@@ -279,15 +276,15 @@ The logic flow is as follows:
 
     1. check out the source code
 
-    2. detect if images are ready, build it if not
+    2. detect if images are ready, build if not
 
-    3. stop the previous container if already running
+    3. stop previous container if you already have one running
 
     4. start the containers
 
-        * after start, copy files from repo to containers. ( Remember, we prefer to copy small source files over to a nearly ready project folder > over `yard/npm/composer` install from scratch > over store external code in the repository.)
+        * after starting, copy files from repo to containers. ( Remember, we prefer to copy small source files over to a nearly ready project folder > over `yard/npm/composer` install from scratch > over store external code in the repository.)
 
-        * finally, start services you will use. ( Due to we need to copy files, "start application server" is not a command embedded in docker. This is a hack for testing environment only. This shall be different from production docker images and shall force you to make another set of docker images optimised for production performance. )
+        * finally, start the services you will use. ( Since we need to copy files, "start application server" is not a command embedded in docker. This is a hack for testing environment only. This shall be different from production docker images and shall force you to make another set of docker images optimised for production performance. )
   
 2. ___*Run unit tests in parallel*___ ( as there shall be no dependencies )
 
@@ -295,7 +292,7 @@ The logic flow is as follows:
 
 4. ___Clean-up___ Use a post pipeline, always-run task to clean up everything. ( leave no side-effect after each run )
 
-update the pipeline script as follow:
+update the pipeline script as follows:
 
 ```
 pipeline {
@@ -380,7 +377,7 @@ done
 
 ## Conclusion
 
-You now have a ready-to-use CI pipeline based on open-source tool chain, which can be deployed free- of-charge!
+You now have a ready-to-use CI pipeline based on open-source tool chain, which can be deployed free-of-charge!
 
 ![pipeline result](https://bitbucket.org/jlam-palo-it/jenkins-pipeline-dockers/raw/983f5a01b9d2eff11aa4788e77e2cf902f2c567a/images/pipeline-result.png)
 
@@ -388,9 +385,9 @@ You deployed a very easy to use NodeJS json-server, and a unit test based on `je
 
 You may also notice a few important things when growing your pipeline:
 
-* You will meet constraints when developing and dockerizing your services. Yet, these force you to create decoupled service tiers. 
+* You will meet constraints when developing and dockerizing your services. These forces you to create decoupled service tiers. 
 
-* Never include third-party libraries in your repositories. Try to prevent npm install in your pipeline which could be very slow.
+* Avoid including third-party libraries in your repositories. Try to prevent npm install in your pipeline which could be very slow.
 
 * Code your plugins instead of Pipeline Editor. Treating your pipeline as code enforces good discipline and also opens up a new world of features, and you can trial run every script on the terminal.
 
