@@ -2,7 +2,7 @@
 
 ##Introduction
 
-Throughout these series, we will try to build a CI pipeline with Jenkins and Dockers.
+Throughout these series, we will try to build a CI pipeline with Jenkins and Docker.
 
 If you can master them, you will be able to test any multi-tiered application on a single computer.
 
@@ -403,7 +403,7 @@ You may also notice a few important things when growing your pipeline:
 
  * Acquire nodes within parallel steps, yet
 
- * Donâ€™t: Use input within a node block
+ * Don’t: Use input within a node block
 
 * __Plan for timeout__ , you can use this timeout block to prevent timeout occur `timeout(time:2, unit:'HOURS') { }`
 
