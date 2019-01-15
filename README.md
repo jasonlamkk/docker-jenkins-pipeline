@@ -403,7 +403,7 @@ You may also notice a few important things when growing your pipeline:
 
  * Acquire nodes within parallel steps, yet
 
- * Don’t: Use input within a node block
+ * Don't: Use input within a node block
 
 * __Plan for timeout__ , you can use this timeout block to prevent timeout occur `timeout(time:2, unit:'HOURS') { }`
 
