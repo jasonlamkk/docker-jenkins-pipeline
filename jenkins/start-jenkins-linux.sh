@@ -1,5 +1,5 @@
 #start-jenkins.sh
-BASE=/private
+BASE=~/cicd
 if [ -z "${JENKIN_DOCKER_HTTP_PORT}" ]; then 
     HTTP_PORT=4080
 else 
