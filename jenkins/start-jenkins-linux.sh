@@ -35,6 +35,14 @@ if [ -z "${JENKIN_INST_NAME}" ]; then
 else 
     INST_NAME=${JENKIN_INST_NAME}
 fi
+
+
+mkdir -p ${SSH_HOME}
+
+mkdir -p ${DATA_FOLDER}
+
+mkdir -p ${HOME_FOLDER}
+
 #start docker
 docker run --rm -d --name ${INST_NAME} -u root -p ${HTTP_PORT}:8080 -v ${SSH_HOME}:/root/.ssh -v ${DATA_FOLDER}:/var/jenkins_home -v ${DOCKER_SOCKET}:/var/run/docker.sock -v ${HOME_FOLDER}:/home jenkinsci/blueocean
 
@@ -53,3 +61,6 @@ docker exec ${INST_NAME} bash ssh-client-init.sh
 docker cp "${DIR}/find-init-password.sh" ${INST_NAME}:find-init-password.sh
 docker exec ${INST_NAME} bash find-init-password.sh
 
+echo "jenkins ready at http://localhost:${HTTP_PORT}/"
+
+hostname -I
